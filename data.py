@@ -22,12 +22,21 @@ class CLIPCollator:
             tokenizer = AutoTokenizer.from_pretrained(name_or_path, use_fast=True)
 
         pixel = image_proc(images=images, return_tensors="pt")
-        text  = tokenizer(
-            text=texts,
-            truncation=True,
-            padding=("max_length" if self.pad_to_max_for_siglip else True),
-            return_tensors="pt",
-        )
+        if self.pad_to_max_for_siglip:
+            text = tokenizer(
+                text=texts,
+                truncation=True,
+                padding="max_length",
+                max_length=64,
+                return_tensors="pt",
+            )
+        else:
+            text  = tokenizer(
+                text=texts,
+                truncation=True,
+                padding=True,
+                return_tensors="pt",
+            )
         return {**pixel, **text}
     
 def prepare_flickr8k_dataset():

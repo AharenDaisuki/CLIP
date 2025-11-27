@@ -80,7 +80,7 @@ def embed_texts(
     """
     model.eval()
     feats = []
-    pad = "max_length" if is_siglip else True
+    # pad = "max_length" if is_siglip else True
 
     tokenizer = getattr(processor, "tokenizer", None)
     if tokenizer is None:
@@ -91,7 +91,21 @@ def embed_texts(
     with torch.inference_mode():
         for i in range(0, len(texts), batch_size):
             batch_txts = texts[i : i + batch_size]
-            inputs = tokenizer(text=batch_txts, truncation=True, padding=pad, return_tensors="pt")
+            if is_siglip:
+                # SigLIP requires max_length padding
+                inputs = tokenizer(
+                    text=batch_txts,
+                    truncation=True,
+                    padding="max_length",
+                    max_length=64,
+                    return_tensors="pt",
+                )
+            else:   
+                inputs = tokenizer(
+                    text=batch_txts, 
+                    truncation=True, 
+                    padding=True, 
+                    return_tensors="pt")
             input_ids = inputs["input_ids"].to(device)
             attn = inputs.get("attention_mask", None)
             attn = attn.to(device) if attn is not None else None
