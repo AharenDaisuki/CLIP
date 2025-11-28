@@ -2,6 +2,7 @@ import torch
 import torch.nn.functional as F
 
 # from tqdm import tqdm
+from PIL import Image
 from typing import Tuple, Any, List
 from transformers import AutoTokenizer
 
@@ -144,3 +145,9 @@ def build_eval_index(hf_dataset) -> Tuple[list, list, List[List[int]], List[int]
         img_to_txt.append(cur_txt_ids)
 
     return images, texts, img_to_txt, txt_to_img
+
+def resize_image(image, target_size: tuple=(224,224)):
+    """Resize image while maintaining aspect ratio"""
+    img = image.copy() if isinstance(image, Image.Image) else Image.fromarray(image)
+    img = img.resize(target_size)
+    return img

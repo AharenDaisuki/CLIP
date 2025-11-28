@@ -169,10 +169,11 @@ The training pipeline includes:
 
 ## Requirements
 
-- Python 3.8+
-- PyTorch 1.12+
-- Transformers 4.20+
-- Datasets
+- Python>=3.8
+- PyTorch>=1.12
+- transformers==4.57.1
+- datasets==2.21.0
+
 - PEFT (for LoRA)
 - PIL, NumPy, scikit-learn
 - Matplotlib (for visualization)

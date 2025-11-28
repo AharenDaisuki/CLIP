@@ -1,7 +1,7 @@
 import os
 
 from configs import CLIPConfig
-from models import load_model
+from models import load_model, load_siglip, load_clip
 from metrics import compute_metrics
 from utils import seed_everything, set_model_device
 from data import prepare_flickr8k_dataset, CLIPCollator
@@ -36,6 +36,10 @@ def eval_clip(checkpoint: str, save_path: str, pad_to_max: bool = False):
     # reproducibility
     seed_everything(5489)
     # load model and processor
+    # if pad_to_max: 
+    #     model, processor = load_siglip(checkpoint)
+    # else: 
+    #     model, processor = load_clip(checkpoint)
     model, processor = load_model(checkpoint)
     # load dataset
     flickr8k = prepare_flickr8k_dataset()
@@ -51,6 +55,8 @@ def eval_clip(checkpoint: str, save_path: str, pad_to_max: bool = False):
         is_siglip=pad_to_max,
     )
     import json
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
     with open(os.path.join(save_path, "test_metric.json"), "w") as f:
         json.dump({k: (None if v is None else float(v)) for k, v in test_metric.items()}, f, indent=2)
 

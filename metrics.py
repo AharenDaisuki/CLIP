@@ -1,8 +1,5 @@
 import torch
-
-from tqdm import tqdm
 from typing import List, Dict
-
 from utils import embed_images, embed_texts, _device_is_cuda, build_eval_index
 
 def ranks_from_scores(scores: torch.Tensor, gt_indices_per_row: List[List[int]]) -> List[int]:
@@ -63,7 +60,7 @@ def compute_metrics(
     else:
         # -------- Streaming exact ranks (constant memory) --------
         i2t_best = []
-        for i in tqdm(range(N), desc="i2t ranks (stream)", leave=False):
+        for i in range(N):
             v = img_emb[i : i + 1]  # (1,D)
             gts = img_to_txt[i]
             s_gt = (v @ txt_emb[gts].T).max().item()
@@ -74,7 +71,7 @@ def compute_metrics(
             i2t_best.append(greater + 1)
 
         t2i_best = []
-        for j in tqdm(range(M), desc="t2i ranks (stream)", leave=False):
+        for j in range(M):
             v = txt_emb[j : j + 1]  # (1,D)
             gt_img = txt_to_img[j]
             s_gt = float((v @ img_emb[gt_img : gt_img + 1].T).item())

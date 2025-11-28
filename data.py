@@ -47,3 +47,6 @@ def prepare_flickr8k_dataset():
     for split in dataset.keys():
         dataset[split] = dataset[split].cast_column("image", HFImage())
     return dataset
+
+def prepare_winoground_dataset():
+    pass
